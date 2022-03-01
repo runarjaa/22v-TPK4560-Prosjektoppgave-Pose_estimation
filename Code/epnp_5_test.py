@@ -8,6 +8,9 @@ from epnp_5 import EPnP
 rand.seed(datetime.now())
 np.set_printoptions(formatter={'float': '{: 0.2f}'.format})
 
+# Trying to import stanford bunny
+bunny = np.loadtxt("d:/Skole/Semester 10/Prosjektoppgave/Code_Project_2022_Jåtun/Code/bunny_points.txt", dtype=np.float64)
+bunnyh = np.hstack((bunny, np.ones((bunny.shape[0],1))))
 
 # Random data
 focal = 1500
@@ -16,11 +19,11 @@ v_0 = 512
 
 # # Transformation Matrix
 transf_c_w = np.array([
-    [1, 0, 0, -0.5],
-    [0, 1, 0, -0.5],
-    [0, 0, 1, 3.0],
+    [1, 0, 0, 0],
+    [0, 1, 0, 0],
+    [0, 0, 1, 1],
     [0, 0, 0, 1  ]
-])
+], dtype=np.float64)
 
 # # Parameter matrix
 camera_para =  np.array([
@@ -45,7 +48,7 @@ ph_w = np.array([
 
 if __name__ == "__main__":
     epnp = EPnP()
-    epnp.load_random_data(60,60,60,0,0,0,3,1500,1500,640,512)
-    # epnp.load_set_data(transf_c_w, camera_para, ph_w)
+    # epnp.load_random_data(100,60,60,0,0,0,3,1500,1500,640,512)
+    epnp.load_set_data(transf_c_w, camera_para, bunnyh)
     epnp.compute_reg_epnp()
     # print(epnp.Rt_3)

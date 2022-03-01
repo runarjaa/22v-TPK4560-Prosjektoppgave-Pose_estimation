@@ -88,10 +88,10 @@ class EPnP:
         
         # Reference points with some random noise to be used for calculation
         self.pix = self.pix_true.copy()
-        for i, p in enumerate(self.pix):
-            if i % 8 == 0:
-                p[0] += rand.randint(-10,10) 
-                p[1] += rand.randint(-10,10) 
+        # for i, p in enumerate(self.pix):
+        #     if i+1 % 400 == 0:
+        #         p[0] += rand.randint(-10,10) 
+        #         p[1] += rand.randint(-10,10) 
         
         # Reference points as normalized coordinates
         # self.snorm =  (self.T @ self.xh_w.T).T
@@ -345,7 +345,7 @@ class EPnP:
 
     def compute_pixels(self):
         snorm_1 = self.x_c1*(1/self.x_c1[:,2].reshape((self.n,1)))
-        self.pix_1 = snorm_1 @ self.C.T
+        self.pix_1 = np.rint(snorm_1 @ self.C.T)
 
         snorm_2 = self.x_c2*(1/self.x_c2[:,2].reshape((self.n,1)))
         self.pix_2 = snorm_2 @ self.C.T
@@ -375,8 +375,8 @@ class EPnP:
 
         fig_2 = plt.figure()
         ay = fig_2.add_subplot()
-        ay.set_xlim(0,self.u0*2)
-        ay.set_ylim(0,self.v0*2)
+        # ay.set_xlim(0,self.u0*2)
+        # ay.set_ylim(0,self.v0*2)
         ay.set_xlabel('X-axis')
         ay.set_ylabel('Y-axis')
 
