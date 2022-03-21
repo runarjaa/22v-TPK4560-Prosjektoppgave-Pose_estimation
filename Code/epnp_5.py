@@ -12,7 +12,7 @@ class EPnP:
     def __init__(self) -> None:
         self.ch_w = self.control_points()
 
-    def compute_reg_epnp(self):
+    def compute_reg_epnp(self, verbose=False):
         self.alpha = self.compute_alpha()
         self.M = self.compute_M()
         self.K = self.compute_K()
@@ -28,13 +28,17 @@ class EPnP:
         self.Rt_2 = self.getRotT(self.x_w, self.x_c2)
         self.Rt_3 = self.getRotT(self.x_w, self.x_c3)
         
-        self.compute_pixels()
-        # self.check_opencv()
+        if verbose == True:
+            self.compute_pixels()
+            # self.check_opencv()
+            self.print_debug()
+            self.print_results()
+    
+    # def compute_gnc_tls_epnp(self):
+        
 
-        self.print_debug()
-
-        self.print_results()
-
+    # def loss(self, a, T, b):
+    #     return a - self.C @ T @ b.T
 
     
     def load_random_data(self, n, ax, ay, az, x, y, z, fu, fv, u0, v0, randomT=False):
@@ -89,9 +93,9 @@ class EPnP:
         # Reference points with some random noise to be used for calculation
         self.pix = self.pix_true.copy()
         for i, p in enumerate(self.pix):
-            if i % 60 == 0:
-                p[0] += rand.randint(-50,50) 
-                p[1] += rand.randint(-50,50) 
+            if i % 55 == 0:
+                p[0] += rand.randint(-5,5) 
+                p[1] += rand.randint(-5,5) 
         
         # Reference points as normalized coordinates
         self.snorm =  (self.T @ self.xh_w.T).T
@@ -368,8 +372,8 @@ class EPnP:
         for i in range(self.n):
             ax.scatter( self.x_c_actual[i][0]   ,  self.x_c_actual[i][1]    ,  self.x_c_actual[i][2], c='blue')
             ax.scatter( self.x_c1[i][0]         ,  self.x_c1[i][1]          ,  self.x_c1[i][2]      , c='red')
-            ax.scatter( self.x_c2[i][0]         ,  self.x_c2[i][1]          ,  self.x_c2[i][2]      , c='green')
-            ax.scatter( self.x_c3[i][0]         ,  self.x_c3[i][1]          ,  self.x_c3[i][2]      , c='cyan')
+            # ax.scatter( self.x_c2[i][0]         ,  self.x_c2[i][1]          ,  self.x_c2[i][2]      , c='green')
+            # ax.scatter( self.x_c3[i][0]         ,  self.x_c3[i][1]          ,  self.x_c3[i][2]      , c='cyan')
 
             # ax.scatter(self.x_c_cv[i][0], self.x_c_cv[i][1], self.x_c_cv[i][2], c='orange')
         plt.show()
@@ -384,8 +388,8 @@ class EPnP:
         for i in range(self.n):
             ay.scatter(self.pix_true[i][0], self.pix_true[i][1], c="blue", marker='s')
             ay.scatter(self.pix_1[i,0], self.pix_1[i,1], c="red", marker='o')
-            ay.scatter(self.pix_2[i,0], self.pix_2[i,1], c="green", marker='>')
-            ax.scatter(self.pix_3[i,0], self.pix_3[i,1], c="cyan", marker='o')
+            # ay.scatter(self.pix_2[i,0], self.pix_2[i,1], c="green", marker='>')
+            # ax.scatter(self.pix_3[i,0], self.pix_3[i,1], c="cyan", marker='o')
 
             # ay.scatter(self.pix_cv[i,0], self.pix_cv[i,1], c="orange", marker='>')
 

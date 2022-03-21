@@ -49,7 +49,7 @@ ph_w = np.array([
 if __name__ == "__main__":
     epnp = EPnP()
     # epnp.load_random_data(100,60,60,0,0,0,3,1500,1500,640,512)
-    # epnp.load_set_data(transf_c_w, camera_para, ph_w)
-    epnp.load_set_data(transf_c_w, camera_para, bunnyh)
-    epnp.compute_reg_epnp()
+    epnp.load_set_data(transf_c_w, camera_para, ph_w)
+    # epnp.load_set_data(transf_c_w, camera_para, bunnyh)
+    epnp.compute_reg_epnp(verbose=True)
     # print(epnp.Rt_3)
