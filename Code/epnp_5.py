@@ -88,13 +88,13 @@ class EPnP:
         
         # Reference points with some random noise to be used for calculation
         self.pix = self.pix_true.copy()
-        # for i, p in enumerate(self.pix):
-        #     if i+1 % 400 == 0:
-        #         p[0] += rand.randint(-10,10) 
-        #         p[1] += rand.randint(-10,10) 
+        for i, p in enumerate(self.pix):
+            if i % 60 == 0:
+                p[0] += rand.randint(-50,50) 
+                p[1] += rand.randint(-50,50) 
         
         # Reference points as normalized coordinates
-        # self.snorm =  (self.T @ self.xh_w.T).T
+        self.snorm =  (self.T @ self.xh_w.T).T
 
     # Computing alphas
     def compute_alpha(self):
@@ -363,12 +363,13 @@ class EPnP:
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')
         ax.set_zlabel('Z-axis')
+        ax.scatter(0,0,0, c='purple')
 
         for i in range(self.n):
             ax.scatter( self.x_c_actual[i][0]   ,  self.x_c_actual[i][1]    ,  self.x_c_actual[i][2], c='blue')
             ax.scatter( self.x_c1[i][0]         ,  self.x_c1[i][1]          ,  self.x_c1[i][2]      , c='red')
-            # ax.scatter( self.x_c2[i][0]         ,  self.x_c2[i][1]          ,  self.x_c2[i][2]      , c='green')
-            # ax.scatter( self.x_c3[i][0]         ,  self.x_c3[i][1]          ,  self.x_c3[i][2]      , c='cyan')
+            ax.scatter( self.x_c2[i][0]         ,  self.x_c2[i][1]          ,  self.x_c2[i][2]      , c='green')
+            ax.scatter( self.x_c3[i][0]         ,  self.x_c3[i][1]          ,  self.x_c3[i][2]      , c='cyan')
 
             # ax.scatter(self.x_c_cv[i][0], self.x_c_cv[i][1], self.x_c_cv[i][2], c='orange')
         plt.show()
@@ -383,15 +384,15 @@ class EPnP:
         for i in range(self.n):
             ay.scatter(self.pix_true[i][0], self.pix_true[i][1], c="blue", marker='s')
             ay.scatter(self.pix_1[i,0], self.pix_1[i,1], c="red", marker='o')
-            # ay.scatter(self.pix_2[i,0], self.pix_2[i,1], c="green", marker='>')
-            # ax.scatter(pix_c_3[i,0], pix_c_3[i,1], c="cyan", marker='o')
+            ay.scatter(self.pix_2[i,0], self.pix_2[i,1], c="green", marker='>')
+            ax.scatter(self.pix_3[i,0], self.pix_3[i,1], c="cyan", marker='o')
 
             # ay.scatter(self.pix_cv[i,0], self.pix_cv[i,1], c="orange", marker='>')
 
         plt.show()
 
     def print_debug(self):
-        print(self.T)
+        print(self.T[:3,:])
         print()
         print(self.Rt_1)
         print()
