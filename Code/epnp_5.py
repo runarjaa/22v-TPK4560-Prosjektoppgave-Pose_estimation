@@ -28,10 +28,11 @@ class EPnP:
         self.Rt_2 = self.getRotT(self.x_w, self.x_c2)
         self.Rt_3 = self.getRotT(self.x_w, self.x_c3)
         
+        self.compute_pixels()
+        # self.check_opencv()
+        self.print_debug()
+        
         if verbose == True:
-            self.compute_pixels()
-            # self.check_opencv()
-            self.print_debug()
             self.print_results()
     
     # def compute_gnc_tls_epnp(self):
@@ -93,7 +94,7 @@ class EPnP:
         # Reference points with some random noise to be used for calculation
         self.pix = self.pix_true.copy()
         for i, p in enumerate(self.pix):
-            if i % 55 == 0:
+            # if i % 5 == 0:
                 p[0] += rand.randint(-5,5) 
                 p[1] += rand.randint(-5,5) 
         
@@ -225,10 +226,10 @@ class EPnP:
         Cc *= sc
         Xc = np.matmul(self.alpha, Cc)
         
-        # for x in Xc:
-        #     if x[-1] < 0:
-        #         Xc *= -1
-        #         Cc *= -1
+        for x in Xc:
+            if x[-1] < 0:
+                Xc *= -1
+                Cc *= -1
         
         return Cc, Xc, sc
 
@@ -367,7 +368,7 @@ class EPnP:
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')
         ax.set_zlabel('Z-axis')
-        ax.scatter(0,0,0, c='purple')
+        # ax.scatter(0,0,0, c='purple')
 
         for i in range(self.n):
             ax.scatter( self.x_c_actual[i][0]   ,  self.x_c_actual[i][1]    ,  self.x_c_actual[i][2], c='blue')
@@ -392,7 +393,6 @@ class EPnP:
             # ax.scatter(self.pix_3[i,0], self.pix_3[i,1], c="cyan", marker='o')
 
             # ay.scatter(self.pix_cv[i,0], self.pix_cv[i,1], c="orange", marker='>')
-
         plt.show()
 
     def print_debug(self):

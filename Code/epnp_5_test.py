@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random as rand
+import open3d as o3d
+import time
 from datetime import datetime
 from epnp_5 import EPnP
 
@@ -9,8 +11,15 @@ rand.seed(datetime.now())
 np.set_printoptions(formatter={'float': '{: 0.2f}'.format})
 
 # Trying to import stanford bunny
-bunny = np.loadtxt("d:/Skole/Semester 10/Prosjektoppgave/Code_Project_2022_Jåtun/Code/bunny_points.txt", dtype=np.float64)
-bunnyh = np.hstack((bunny, np.ones((bunny.shape[0],1))))
+path_to_bunny = "D:\\Skole\\Semester 10\\Prosjektoppgave\\Data\\bunny\\data\\bun000.ply"
+bunny_ply = o3d.io.read_point_cloud(path_to_bunny)
+
+# o3d.visualization.draw_geometries([bunny_ply])
+
+bunny = np.asarray(bunny_ply.points)
+
+# bunny = np.loadtxt("d:/Skole/Semester 10/Prosjektoppgave/Code_Project_2022_Jåtun/Code/bunny_points.txt", dtype=np.float64)
+bunnyh = np.hstack((bunny, np.ones((bunny.shape[0] , 1))))
 
 # Random data
 focal = 1500
@@ -48,8 +57,11 @@ ph_w = np.array([
 
 if __name__ == "__main__":
     epnp = EPnP()
-    # epnp.load_random_data(100,60,60,0,0,0,3,1500,1500,640,512)
-    epnp.load_set_data(transf_c_w, camera_para, ph_w)
+    epnp.load_random_data(1000,60,60,0,0,0,3,1500,1500,640,512)
+    # epnp.load_set_data(transf_c_w, camera_para, ph_w)
     # epnp.load_set_data(transf_c_w, camera_para, bunnyh)
+    start = time.time()
     epnp.compute_reg_epnp(verbose=True)
+    end = time.time()
+    print(end-start)
     # print(epnp.Rt_3)
