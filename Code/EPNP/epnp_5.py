@@ -27,13 +27,14 @@ class EPnP:
         self.Rt_1 = self.getRotT(self.x_w, self.x_c1)
         self.Rt_2 = self.getRotT(self.x_w, self.x_c2)
         self.Rt_3 = self.getRotT(self.x_w, self.x_c3)
+        self.best_trans()
         
         self.compute_pixels()
         # self.check_opencv()
-        self.print_debug()
+        self.print_results()
         
         if verbose == True:
-            self.print_results()
+            self.plot_results()
     
     # def compute_gnc_tls_epnp(self):
         
@@ -287,6 +288,25 @@ class EPnP:
         return X1, X2, X3
 
 
+    def best_trans(self):
+        err1 = np.linalg.norm(self.T[:3,:] - self.Rt_1)
+        err2 = np.linalg.norm(self.T[:3,:] - self.Rt_2)
+        err3 = np.linalg.norm(self.T[:3,:] - self.Rt_3)
+        if err1 < err2 and err1 < err3:
+            self.Rt_best = self.Rt_1
+            self.err_best = err1
+            self.best_rot_idx = 1
+        elif err2 < err1 and err2 < err3:
+            self.Rt_best = self.Rt_2
+            self.err_best = err2
+            self.best_rot_idx = 2
+        elif err3 < err1 and err3 < err2:
+            self.Rt_best = self.Rt_3
+            self.err_best = err3
+            self.best_rot_idx = 3
+        else:
+            print("Could not find best rotation matrix")
+
     # Defning control points
     def control_points(self):
         return  np.array([
@@ -359,7 +379,7 @@ class EPnP:
         self.pix_3 = snorm_3 @ self.C.T
 
     # Printing 3d image
-    def print_results(self):
+    def plot_results(self):
         fig_1 = plt.figure()
         ax = fig_1.add_subplot(projection='3d')
         # ax.set_xlim(-1,1)
@@ -395,11 +415,11 @@ class EPnP:
             # ay.scatter(self.pix_cv[i,0], self.pix_cv[i,1], c="orange", marker='>')
         plt.show()
 
-    def print_debug(self):
+    def print_results(self):
+        print("Results:")
+        print("Actual Transfomration matrix:")
         print(self.T[:3,:])
-        print()
-        print(self.Rt_1)
-        print()
-        print(self.Rt_2)
-        print()
-        print(self.Rt_3)
+        print("\nBest calculated Transfomation matrix:")
+        print(self.Rt_best)
+        print("Beta:", self.best_rot_idx)
+        print("Error:", self.err_best)

@@ -11,7 +11,7 @@ rand.seed(datetime.now())
 np.set_printoptions(formatter={'float': '{: 0.2f}'.format})
 
 # Trying to import stanford bunny
-path_to_bunny = "D:\\Skole\\Semester 10\\Prosjektoppgave\\Data\\bunny\\data\\bun000.ply"
+path_to_bunny = "D:\\Skole\\Semester 10\\Prosjektoppgave\\Data\\bunny\\reconstruction\\bun_zipper.ply"
 bunny_ply = o3d.io.read_point_cloud(path_to_bunny)
 
 # o3d.visualization.draw_geometries([bunny_ply])
@@ -57,19 +57,18 @@ ph_w = np.array([
 
 if __name__ == "__main__":
     epnp = EPnP()
-    epnp.load_random_data(10000,60,60,60,0,0,3,1500,1500,640,512)
+    # epnp.load_random_data(10000,60,60,60,0,0,3,1500,1500,640,512)
     # epnp.load_set_data(transf_c_w, camera_para, ph_w)
-    # epnp.load_set_data(transf_c_w, camera_para, bunnyh)
+    epnp.load_set_data(transf_c_w, camera_para, bunnyh)
     start = time.time()
     start_p = time.process_time()
     epnp.compute_reg_epnp(verbose=False)
     end = time.time()
     end_p = time.process_time()
-    print(end-start, end_p-start_p)
+    print("\nCalculating time:", end-start, end_p-start_p, "\n")
 
 
     test = epnp.x_c1
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(test)
-    o3d.visualization.draw_geometries([pcd])
-    # print(epnp.Rt_3)
+    # o3d.visualization.draw_geometries([pcd])

@@ -1,4 +1,3 @@
-from audioop import mul
 import numpy as np
 from sympy import maximum
 

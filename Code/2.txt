@@ -1,9 +1,0 @@
-A har forskjellig form fra camera_para
-
-Possible error calculating alpha
-
-Don't like rank = 12 in M
-
-Computing betas:
-Why calculate signs like that?
-Why betas in that order?

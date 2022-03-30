@@ -1,3 +1,4 @@
+from cgi import test
 import numpy as np
 import matplotlib.pyplot as plt
 import open3d as o3d
@@ -66,7 +67,7 @@ class GNC_Average:
 
             # Stopping criteria
             if i >= 5:
-                if np.sum(self.w) == self.last_iter[i-5]:
+                if np.sum(self.w) == self.last_iter[i]:
                     break
         
         self.inliers = []
@@ -100,17 +101,19 @@ class GNC_Average:
 
 if __name__ == "__main__":
     # Settings
-    cent = 10
-    std = 1
+    cent = 10.0
+    std = 1.0
     num = 100
 
     # Information
     answer = []
     iterations = []
-    in_out_per = []
-
+    percentage = []
+    x_iter = []
 
     test_num = 100
+    print("Testing GNC on weighted average of real numbers")
+    print("Center:", cent, "\nNumber of numbers:", num, "\nIterations", test_num)
     for i in range(test_num):
         gnc = GNC_Average()
         # gnc.load_points(cent, std, num)
@@ -119,9 +122,40 @@ if __name__ == "__main__":
 
         answer.append(gnc.x)
         iterations.append(gnc.iterations)
-        in_out_per.append((gnc.inlier_num, gnc.outlier_num, gnc.percentage))
+        percentage.append(gnc.percentage)
+        x_iter.append(gnc.x_iter)
 
-    # print(iterations)
-    # print(in_out_per)
-    plt.plot(answer)
+    avrg_answer = np.sum(answer)/len(answer)
+    avrg_iterat = np.sum(iterations)/len(iterations)
+    avrg_percen = np.sum(percentage)/len(percentage)
+
+    print("Average iterations:\t", avrg_iterat)
+    print("Average answer:\t", avrg_answer)
+    print("Average percentage:\t", avrg_percen)
+    
+    # Running gnc on answers for fun
+    gnc = GNC_Average()
+    gnc.numbers = np.array(answer)
+    gnc.n = len(answer)
+    gnc.gnc_average()
+
+    print(gnc.x)
+    
+    # Plotting
+    fig, (ax1, ax2) = plt.subplots(2)
+
+    # ax1: Final answer
+    ax1.set_title("Final answer")
+    ax1.set_xlabel("Global Iteration")
+    ax1.set_ylabel("X value")
+    ax1.plot(answer)
+    ax1.axhline(np.sum(answer)/len(answer), color='orange')
+
+
+    # ax2: Iteration of x 
+    ax2.set_title("Iterations of x")
+    ax2.set_xlabel("Iterations")
+    ax2.set_ylabel("X value")
+    for i, n in enumerate(x_iter):
+        ax2.plot(n)
     plt.show()
