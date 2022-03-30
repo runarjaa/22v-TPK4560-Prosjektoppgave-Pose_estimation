@@ -39,7 +39,7 @@ class GNC_Average:
 
         # GNC initialization
         max_iterations = 1000
-        eps = 0.2
+        eps = 0.1
         mu_update = 1.4
         self.w = np.ones(self.n)
         mu = eps**2 / (2*r0_max**2 - eps**2)

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2 as cv
+import open3d as o3d
 import random as rand
 from datetime import datetime
 rand.seed(datetime.now())
@@ -12,7 +13,7 @@ class EPnP:
     def __init__(self) -> None:
         self.ch_w = self.control_points()
 
-    def compute_reg_epnp(self, verbose=False):
+    def compute_reg_epnp(self):
         self.alpha = self.compute_alpha()
         self.M = self.compute_M()
         self.K = self.compute_K()
@@ -32,9 +33,6 @@ class EPnP:
         self.compute_pixels()
         # self.check_opencv()
         self.print_results()
-        
-        if verbose == True:
-            self.plot_results()
     
     # def compute_gnc_tls_epnp(self):
         
@@ -95,9 +93,9 @@ class EPnP:
         # Reference points with some random noise to be used for calculation
         self.pix = self.pix_true.copy()
         for i, p in enumerate(self.pix):
-            if i % 10 == 0:
-                p[0] += rand.randint(-5,5) 
-                p[1] += rand.randint(-5,5) 
+            if i % 2 == 0:
+                p[0] += rand.randint(-15,15) 
+                p[1] += rand.randint(-15,15) 
         
         # Reference points as normalized coordinates
         self.snorm =  (self.T @ self.xh_w.T).T
@@ -369,17 +367,18 @@ class EPnP:
         self.pix_cv = snorm_cv @ self.C.T
 
     def compute_pixels(self):
-        snorm_1 = self.x_c1*(1/self.x_c1[:,2].reshape((self.n,1)))
-        self.pix_1 = np.rint(snorm_1 @ self.C.T)
-
-        snorm_2 = self.x_c2*(1/self.x_c2[:,2].reshape((self.n,1)))
-        self.pix_2 = snorm_2 @ self.C.T
-
-        snorm_3 = self.x_c3*(1/self.x_c3[:,2].reshape((self.n,1)))
-        self.pix_3 = snorm_3 @ self.C.T
+        if self.best_rot_idx == 1:
+            snorm_1 = self.x_c1*(1/self.x_c1[:,2].reshape((self.n,1)))
+            self.pix_calc = np.rint(snorm_1 @ self.C.T)
+        elif self.best_rot_idx == 2:
+            snorm_2 = self.x_c2*(1/self.x_c2[:,2].reshape((self.n,1)))
+            self.pix_calc = np.rint(snorm_2 @ self.C.T)
+        elif self.best_rot_idx == 3:
+            snorm_3 = self.x_c3*(1/self.x_c3[:,2].reshape((self.n,1)))
+            self.pix_calc = np.rint(snorm_3 @ self.C.T)
 
     # Printing 3d image
-    def plot_results(self):
+    def plot_results_plt(self):
         fig_1 = plt.figure()
         ax = fig_1.add_subplot(projection='3d')
         # ax.set_xlim(-1,1)
@@ -414,6 +413,23 @@ class EPnP:
 
             # ay.scatter(self.pix_cv[i,0], self.pix_cv[i,1], c="orange", marker='>')
         plt.show()
+    
+    def plot_results_o3d(self):
+        # Colors to be used
+        color1 = np.array([0.0, 0.0, 1.0])
+        color2 = np.array([255,165,0])/255
+        # Actual pixels
+        pcd_true = o3d.geometry.PointCloud()
+        pcd_true.points = o3d.utility.Vector3dVector(self.pix_true)
+        pcd_true.paint_uniform_color(color1)
+        # Calculated Pixeld
+        pcd_epnp = o3d.geometry.PointCloud()
+        pcd_epnp.points = o3d.utility.Vector3dVector(self.pix_calc)
+        pcd_epnp.paint_uniform_color(color2)
+        # Drawing the pixels
+        o3d.visualization.draw_geometries([pcd_true, pcd_epnp], width=1600, height=900)
+
+
 
     def print_results(self):
         print("Results:")

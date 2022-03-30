@@ -62,11 +62,12 @@ if __name__ == "__main__":
     epnp.load_set_data(transf_c_w, camera_para, bunnyh)
     start = time.time()
     start_p = time.process_time()
-    epnp.compute_reg_epnp(verbose=False)
+    epnp.compute_reg_epnp()
     end = time.time()
     end_p = time.process_time()
     print("\nCalculating time:", end-start, end_p-start_p, "\n")
 
+    epnp.plot_results_o3d()
 
     test = epnp.x_c1
     pcd = o3d.geometry.PointCloud()
