@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 def skewm(r):
     return np.array([[0,-r[2],r[1]], [r[2],0,-r[0]], [-r[1],r[0],0]])
@@ -54,6 +55,7 @@ w = np.ones(n)
 mu = eps**2 / (2*r_0_max**2 - eps**2)
 print("\n mu = \n {}\n".format(mu))
 
+start = time.time()
 for i in range(max_iterations):
     # Weighted Procrustes
     H = B @ np.diag(w) @ A.T
@@ -66,6 +68,9 @@ for i in range(max_iterations):
         w[j] = w_from_r(r[j], eps, mu)
 
     mu = mu_update_factor * mu
+
+end = time.time()
+print(end-start)
 
 print("\n R = \n {}\n".format(R))
 print("\n r = \n {}\n".format(r))

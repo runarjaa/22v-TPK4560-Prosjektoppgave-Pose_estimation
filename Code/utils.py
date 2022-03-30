@@ -16,3 +16,8 @@ def w_from_r(r, eps, mu):
     else:
         w = (eps * np.sqrt(mu*(mu+1)))/abs(r) - mu
     return w
+
+def expso3(u):
+    R = np.identity(3) + np.sinc(np.linalg.norm(u)/np.pi)*skewm(u)\
+        + 0.5*(np.sinc(np.linalg.norm(u)/(2*np.pi)))**2 * skewm(u) @ skewm(u)
+    return R
