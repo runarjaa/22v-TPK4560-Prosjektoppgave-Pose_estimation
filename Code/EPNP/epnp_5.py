@@ -93,9 +93,9 @@ class EPnP:
         # Reference points with some random noise to be used for calculation
         self.pix = self.pix_true.copy()
         for i, p in enumerate(self.pix):
-            if i % 2 == 0:
-                p[0] += rand.randint(-15,15) 
-                p[1] += rand.randint(-15,15) 
+            if i % 4 == 0:
+                p[0] += rand.randint(-10,10) 
+                p[1] += rand.randint(-10,10) 
         
         # Reference points as normalized coordinates
         self.snorm =  (self.T @ self.xh_w.T).T

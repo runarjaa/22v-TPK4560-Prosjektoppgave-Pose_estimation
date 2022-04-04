@@ -68,8 +68,3 @@ if __name__ == "__main__":
     print("\nCalculating time:", end-start, end_p-start_p, "\n")
 
     epnp.plot_results_o3d()
-
-    test = epnp.x_c1
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(test)
-    # o3d.visualization.draw_geometries([pcd])
