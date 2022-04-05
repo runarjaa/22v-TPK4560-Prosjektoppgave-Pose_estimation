@@ -232,7 +232,7 @@ class EPnP:
         
         return Cc, Xc, sc
 
-    # #stolenagain
+    # #stolenagain - Turns out it is just Procrustes
     def getRotT(self, wpts, cpts):
         wcent = np.tile(np.mean(wpts, axis=0).reshape((1, 3)), (self.n, 1))
         ccent = np.tile(np.mean(cpts, axis=0).reshape((1, 3)), (self.n, 1))
