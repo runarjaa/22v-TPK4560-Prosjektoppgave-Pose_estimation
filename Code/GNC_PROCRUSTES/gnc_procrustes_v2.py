@@ -201,7 +201,8 @@ def testing_gnc(
     fig, ax = plt.subplots(3)
 
     x_vals = np.arange(min_percentage, max_percentage+1, step)
-    print(x_vals)
+
+    fig.suptitle("Num per percent: {}".format(num_per_percent), fontsize=9)
 
     ax[0].set_title("Average error")
     ax[0].set_xlim([min_percentage, max_percentage])
@@ -210,6 +211,7 @@ def testing_gnc(
     ax[1].set_title("Average number of iterations")
     ax[1].set_xlim([min_percentage, max_percentage])
     ax[1].plot(x_vals, average_iterations_all)
+    ax[1].set_ylim(ymin=0)
     
     
     ax[2].set_title("Average difference on percentage outliers vs truth")
@@ -232,10 +234,10 @@ def showing_gnc_with_plot(num=50):
 if __name__ == "__main__":
     
     testing_gnc(
-        min_percentage =  50,
+        min_percentage =   0,
         max_percentage = 100,
-        step=              1,
-        num_per_percent=   1
+        step=              5,
+        num_per_percent=   2
     )
 
-    # showing_gnc_with_plot(98)
+    # showing_gnc_with_plot(50)

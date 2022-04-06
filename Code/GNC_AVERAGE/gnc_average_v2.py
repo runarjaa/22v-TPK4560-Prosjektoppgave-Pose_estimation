@@ -89,7 +89,7 @@ class GNC_Average:
         print()
 
 
-
+    def plot_histogram(self):
         count, bins, ignored = plt.hist(self.numbers, 100, density=True)
         plt.plot(bins, 1/(self.std * np.sqrt(2 * np.pi)) *
                np.exp( - (bins - self.cent)**2 / (2 * self.std**2) ),
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     for i in range(test_num):
         gnc = GNC_Average()
         # gnc.load_points(cent, std, num)
-        gnc.load_points_extra(cent, std, num, cent-30, cent+30, 50)
+        gnc.load_points_extra(cent, std, num, cent+20, cent+50, 50)
         gnc.gnc_average()
 
         answer.append(gnc.x)
@@ -128,9 +128,11 @@ if __name__ == "__main__":
     avrg_iterat = np.sum(iterations)/len(iterations)
     avrg_percen = np.sum(percentage)/len(percentage)
 
-    print("Average iterations:\t", avrg_iterat)
-    print("Average answer:\t", avrg_answer)
+    print("\nAverage iterations:\t", avrg_iterat)
+    print("Average answer:\t\t", avrg_answer)
     print("Average percentage:\t", avrg_percen)
+
+    gnc.plot_histogram()
     
     # Running gnc on answers for fun
     gnc = GNC_Average()
@@ -138,6 +140,7 @@ if __name__ == "__main__":
     gnc.n = len(answer)
     gnc.gnc_average()
 
+    print("\nTried doing gnc on the answers from the previous tests:")
     print(gnc.x)
     
     # Plotting
