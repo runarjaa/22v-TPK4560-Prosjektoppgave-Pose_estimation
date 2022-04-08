@@ -8,7 +8,6 @@ rand.seed(datetime.now())
 
 np.set_printoptions(formatter={'float': '{: 0.2f}'.format})
 
-
 class EPnP:
     def __init__(self) -> None:
         self.ch_w = self.control_points()
@@ -93,7 +92,7 @@ class EPnP:
         # Reference points with some random noise to be used for calculation
         self.pix = self.pix_true.copy()
         for i, p in enumerate(self.pix):
-            if i % 4 == 0:
+            if i % 10 == 0:
                 p[0] += rand.randint(-10,10) 
                 p[1] += rand.randint(-10,10) 
         
@@ -236,8 +235,8 @@ class EPnP:
     def getRotT(self, wpts, cpts):
         wcent = np.tile(np.mean(wpts, axis=0).reshape((1, 3)), (self.n, 1))
         ccent = np.tile(np.mean(cpts, axis=0).reshape((1, 3)), (self.n, 1))
-        wpts = wpts.reshape((self.n, 3)) - wcent
-        cpts = cpts.reshape((self.n, 3)) - ccent
+        wpts = (wpts.reshape((self.n, 3)) - wcent)
+        cpts = (cpts.reshape((self.n, 3)) - ccent)
         
         M = np.matmul(cpts.transpose(), wpts)
         
@@ -246,7 +245,6 @@ class EPnP:
         
         if np.linalg.det(R) < 0:
             R = - R
-            
         T = ccent[0].transpose() - np.matmul(R, wcent[0].transpose())
 
         Rt = np.concatenate((R.reshape((3, 3)), T.reshape((3, 1))), axis=1)

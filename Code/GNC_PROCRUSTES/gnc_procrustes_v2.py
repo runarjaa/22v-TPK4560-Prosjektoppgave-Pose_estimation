@@ -161,7 +161,7 @@ class GNC_PROCRUSTES:
 
 
 # ----------------- Testing ----------------
-def testing_gnc(
+def testing_gnc_procrustes(
             min_percentage = 0, 
             max_percentage = 90, 
             step = 1,
@@ -233,11 +233,11 @@ def showing_gnc_with_plot(num=50):
 
 if __name__ == "__main__":
     
-    testing_gnc(
-        min_percentage =   0,
-        max_percentage = 100,
-        step=              5,
-        num_per_percent=   2
-    )
+    # testing_gnc_procrustes(
+    #     min_percentage =   0,
+    #     max_percentage = 100,
+    #     step=              5,
+    #     num_per_percent=   2
+    # )
 
-    # showing_gnc_with_plot(50)
+    showing_gnc_with_plot(50)

@@ -11,7 +11,8 @@ rand.seed(datetime.now())
 np.set_printoptions(formatter={'float': '{: 0.2f}'.format})
 
 # Trying to import stanford bunny
-path_to_bunny = "D:\\Skole\\Semester 10\\Prosjektoppgave\\Data\\bunny\\reconstruction\\bun_zipper.ply"
+# path_to_bunny = "D:\\Skole\\Semester 10\\Prosjektoppgave\\Data\\bunny\\reconstruction\\bun_zipper.ply"
+path_to_bunny = "D:\\Runar\\Documents\\1_Studier\\Semester_10\\Prosjektoppgave\\22v-TPK4560-Prosjektoppgave-Pose_estimation\\Data\\bunny\\reconstruction\\bun_zipper.ply"
 bunny_ply = o3d.io.read_point_cloud(path_to_bunny)
 
 # o3d.visualization.draw_geometries([bunny_ply])
