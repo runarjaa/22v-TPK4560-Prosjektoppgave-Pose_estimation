@@ -1,6 +1,9 @@
+from cgitb import strong
 import numpy as np
 import matplotlib.pyplot as plt
 import open3d as o3d
+
+import matplotlib.patheffects as pe
 
 from utils import *
 
@@ -90,12 +93,14 @@ class GNC_Average:
 
 
     def plot_histogram(self):
-        count, bins, ignored = plt.hist(self.numbers, 100, density=True)
-        plt.plot(bins, 1/(self.std * np.sqrt(2 * np.pi)) *
-               np.exp( - (bins - self.cent)**2 / (2 * self.std**2) ),
-               linewidth=2, color='r')
-        plt.axvline(self.x, linewidth=3, color='orange')
-        plt.show()
+        fig, plothist = plt.subplots()
+        count, bins, ignored = plothist.hist(self.numbers, 70, density=True, label='Number Distribution')
+        # plothist.plot(bins, 1/(self.std * np.sqrt(2 * np.pi)) *
+        #        np.exp( - (bins - self.cent)**2 / (2 * self.std**2) ),
+        #        linewidth=1, color='r')
+        plothist.axvline(self.x, linewidth=3, color='orange', label='Solution')
+        plothist.legend(loc="upper right")
+        # plt.show()
 
 
 if __name__ == "__main__":
@@ -103,6 +108,9 @@ if __name__ == "__main__":
     cent = 10.0
     std = 1.0
     num = 100
+    outliers = 100
+    min = cent - 20
+    max = cent + 50
 
     # Information
     answer = []
@@ -110,19 +118,26 @@ if __name__ == "__main__":
     percentage = []
     x_iter = []
 
-    test_num = 100
+    test_num = 20
     print("Testing GNC on weighted average of real numbers")
     print("Center:", cent, "\nNumber of numbers:", num, "\nIterations", test_num)
     for i in range(test_num):
         gnc = GNC_Average()
         # gnc.load_points(cent, std, num)
-        gnc.load_points_extra(cent, std, num, cent+20, cent+50, 50)
+        gnc.load_points_extra(cent, std, num, min, max, outliers)
         gnc.gnc_average()
 
         answer.append(gnc.x)
         iterations.append(gnc.iterations)
         percentage.append(gnc.percentage)
         x_iter.append(gnc.x_iter)
+
+        if i == 2:
+            fig, ay = plt.subplots()
+            _, test, __ = plt.hist(gnc.numbers, 100, density=True)
+            # print(gnc.numbers)
+            ay.hist(gnc.numbers, bins= 100)
+            # plt.show()
 
     avrg_answer = np.sum(answer)/len(answer)
     avrg_iterat = np.sum(iterations)/len(iterations)
@@ -144,20 +159,24 @@ if __name__ == "__main__":
     print(gnc.x)
     
     # Plotting
-    fig, (ax1, ax2) = plt.subplots(2)
+    fig, ax1 = plt.subplots(1)
 
     # ax1: Final answer
     ax1.set_title("Final answer")
     ax1.set_xlabel("Global Iteration")
     ax1.set_ylabel("X value")
-    ax1.plot(answer)
-    ax1.axhline(np.sum(answer)/len(answer), color='orange')
+    ax1.plot(answer, label='X value')
+    ax1.axhline(np.sum(answer)/len(answer), color='orange', label = 'Average X value')
+    ax1.legend(loc="upper right")
+    # plt.show()
 
-
+    fig, ax2 = plt.subplots(1)
     # ax2: Iteration of x 
     ax2.set_title("Iterations of x")
     ax2.set_xlabel("Iterations")
     ax2.set_ylabel("X value")
+    ax2.axhline(cent, color='black', linewidth = 1, label = 'True center')
     for i, n in enumerate(x_iter):
-        ax2.plot(n)
+        ax2.plot(n, linewidth= 3)
+    ax2.legend(loc="upper right")
     plt.show()

@@ -47,7 +47,7 @@ class EPnP:
             last_iter.append(np.sum(self.gnc_w))
 
             #Weighted EPnP, this is where I do not think this will work
-            self.alpha = self.compute_gnc_alpha()
+            self.alpha = self.compute_alpha()
             self.M = self.compute_M()
             self.K = self.compute_K()
             self.rho = self.compute_rho()

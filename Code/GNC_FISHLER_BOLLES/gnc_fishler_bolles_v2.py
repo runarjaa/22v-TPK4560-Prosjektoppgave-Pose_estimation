@@ -23,8 +23,8 @@ class GNC_LINEAR_REGRESSION():
     def load_data(self):
         self.min = 0
         self.max = 10
-        self.a = 10
-        self.b = 20
+        self.a = 1
+        self.b = 1
 
         self.inli = np.ceil(self.n - self.n * self.per/100).astype('int32')
         self.outl = np.floor(self.n * self.per/100).astype('int32')
@@ -33,11 +33,13 @@ class GNC_LINEAR_REGRESSION():
         noise_x = np.random.uniform(self.min, self.max , self.outl).reshape((self.outl, 1))
 
         line_y  = np.asarray([self.y(x, self.a, self.b) for x in line_x]).reshape((self.inli, 1))
-        noise_y = np.asarray([self.y(
-            x, np.random.randint(self.a-10,self.a+10),
-            np.random.randint(-self.b*2,self.b*2
-            )) for x in noise_x]
-            ).reshape((self.outl, 1))
+        # noise_y = np.asarray([self.y(
+        #     x, np.random.randint(self.a-10,self.a+10),
+        #     np.random.randint(-self.b*2,self.b*2
+        #     )) for x in noise_x]
+        #     ).reshape((self.outl, 1))
+
+        noise_y = np.asarray([np.array(np.random.randint(-100, 100)) for x in noise_x]).reshape((self.outl, 1))
 
         X = np.concatenate((line_x, noise_x), axis=0)
         self.Y = np.concatenate((line_y, noise_y), axis=0)
@@ -114,23 +116,26 @@ class GNC_LINEAR_REGRESSION():
 
     def plot_results(self):
         fig, ax = plt.subplots(figsize=(7,3.5))
-        ax.set_xlim([-0.5,10.5]);ax.set_ylim([-0.4,5])
+        ax.set_xlim([-0.5,10.5])
+        # ax.set_ylim([-0.4,5])
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
 
         x = np.linspace(self.min-5, self.max+5, self.n*10)
         
         # LEAST SQUARES LINE
-        ax.plot(x, 1.51 + 0.06 * x, color='purple', label='Least Squares Line', linewidth=3.5, path_effects=[pe.Stroke(linewidth=5, foreground='black'), pe.Normal()])
+        # ax.plot(x, 1.51 + 0.06 * x, color='purple', label='Least Squares Line', linewidth=3.5, path_effects=[pe.Stroke(linewidth=5, foreground='black'), pe.Normal()])
 
         # GUESSED LINE
-        # ax.plot(x, self.B[0]*x + self.B[1], color='blue', linewidth=3.5, label='Guessed line')
+        ax.plot(x, self.B[0]*x + self.B[1], color='blue', linewidth=3.5, label='Guessed line', zorder=5)
 
         # IDEAL LINE
-        ax.plot(x, self.a*x + self.b, color='orange', label='Ideal Line', linewidth=3.5, path_effects=[pe.Stroke(linewidth=5, foreground='black'), pe.Normal()])
+        ax.plot(x, self.a*x + self.b, color='orange', label='Ideal Line', linewidth=7, zorder=1)
 
-        ax.legend(loc='upper left')
-        ax.scatter(self.X[:,0], self.Y, s=50, c='cyan', edgecolors='black', zorder=10)
+
+        ax.legend(loc='upper left').set_zorder(100)
+        ax.scatter(self.X[ :self.inli, 0], self.Y[:self.inli], s=50, c='green', edgecolors='black', zorder=10)
+        ax.scatter(self.X[ self.inli:, 0], self.Y[self.inli:], s=50, c='red', edgecolors='black', zorder=10)
 
         if self.fishler:
             ax.set_xlim([-0.5,10.5]);ax.set_ylim([-0.4,5])
@@ -171,6 +176,10 @@ def testing_gnc_LinReg(
 
             average_iterations.append(gnc.iterations)
             accuracy_percent.append(gnc.per - i)
+
+            if i == 182:
+                print(gnc.B, gnc.B0)
+                gnc.plot_results()
         
         average_error_all.append(np.average(average_error))
         average_iterations_all.append(np.average(average_iterations))
@@ -189,31 +198,34 @@ def testing_gnc_LinReg(
     ax[0].set_xlim([min_percentage, max_percentage])
     ax[0].plot(x_vals, average_error_all)
 
+
     ax[1].set_title("Average number of iterations")
     ax[1].set_xlim([min_percentage, max_percentage])
     ax[1].plot(x_vals, average_iterations_all)
-    ax[1].set_ylim(ymin=0)
+    ax[1].set_ylim([0, 50])
     
     
     ax[2].set_title("Average difference on percentage outliers vs truth")
     ax[2].set_xlim([min_percentage, max_percentage])
     ax[2].plot(x_vals, accuracy_percentage_all)
+    
 
     plt.show()
 
 def testing_gnc_LinReg_Fishler():
     gnc = GNC_LINEAR_REGRESSION(fishler=True)
     gnc.plot_results()
+    print(gnc.iterations)
 # ------------------------------------------
 
 if __name__ == "__main__":
     
-    # testing_gnc_LinReg(
-    #     num_of_num     = 100,
-    #     min_percentage =   0,
-    #     max_percentage = 100,
-    #     step           =   5,
-    #     num_per_percent=   2
-    # )
+    testing_gnc_LinReg(
+        num_of_num     = 100,
+        min_percentage =  50,
+        max_percentage = 100,
+        step           =   1,
+        num_per_percent=   5
+    )
 
-    testing_gnc_LinReg_Fishler()
+    # testing_gnc_LinReg_Fishler()
