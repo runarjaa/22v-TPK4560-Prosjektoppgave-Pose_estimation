@@ -17,8 +17,7 @@ class GNC_PROCRUSTES:
 
     def load_points(self):
         # Loading ply-file
-        path_to_bunny = "D:\\Runar\\Documents\\1_Studier\\Semester_10\\Prosjektoppgave\\22v-TPK4560-Prosjektoppgave-Pose_estimation" +\
-        "\\Data\\bunny\\reconstruction\\bun_zipper_res4.ply"
+        path_to_bunny = "D:\\Skole\\Semester_10\\Prosjektoppgave\\Data\\bunny\\reconstruction\\bun_zipper_res4.ply"
         bunny_true_ply = o3d.io.read_point_cloud(path_to_bunny)
 
         # Point calculations
@@ -42,7 +41,7 @@ class GNC_PROCRUSTES:
         R0 = np.identity(3)
         self.r = np.zeros(self.n)
         for i in range(self.n):
-            self.r[i] = np.linalg.norm(self.bunny_true[i] - R0 @ self.bunny[i])
+            self.r[i] = np.linalg.norm(self.bunny_true[i] - R0 @ self.bunny[i])**2
         r0_max = np.max(self.r)
 
         eps = 0.011
@@ -65,7 +64,7 @@ class GNC_PROCRUSTES:
 
             # Loss function
             for j in range(self.n):
-                self.r[j] = np.linalg.norm(self.bunny_true[j] - self.R @ self.bunny[j])
+                self.r[j] = np.linalg.norm(self.bunny_true[j] - self.R @ self.bunny[j])**2
                 self.w[j] = w_from_r(self.r[j], eps, mu)
             
             mu = mu_update * mu
@@ -164,7 +163,7 @@ class GNC_PROCRUSTES:
 def testing_gnc_procrustes(
             min_percentage = 0, 
             max_percentage = 90, 
-            step = 1,
+            step = 10,
             num_per_percent = 1
         ):
     
@@ -227,6 +226,7 @@ def showing_gnc_with_plot(num=50):
     gnc = GNC_PROCRUSTES(num)
     gnc.calculate_perc()
     gnc.plot_o3d()
+    print(gnc.n)
 
 # ------------------------------------------
 

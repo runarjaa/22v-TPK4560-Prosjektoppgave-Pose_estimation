@@ -80,11 +80,11 @@ class GNC_LINEAR_REGRESSION():
 
         r = np.zeros(self.n)
         for i in range(self.n):
-            r[i] = np.linalg.norm(self.Y[i] - self.X[i] @ self.B0)
+            r[i] = np.linalg.norm(self.Y[i] - self.X[i] @ self.B0) **2
         r0_max = np.max(r)
 
         max_iter = 1000
-        eps = 0.2
+        eps = 0.1
         mu_update = 1.4
         w = np.ones(self.n, dtype=np.float32)
         mu = eps**2 / (2*r0_max**2 - eps**2)
@@ -105,6 +105,7 @@ class GNC_LINEAR_REGRESSION():
 
             for j in range(self.n):
                 r[j] = np.linalg.norm(self.Y[j] - self.X[j] @ self.B)
+                r[j] = r[j]**2
                 w[j] = w_from_r(r[j], eps, mu)
 
             mu = mu_update * mu
@@ -220,12 +221,12 @@ def testing_gnc_LinReg_Fishler():
 
 if __name__ == "__main__":
     
-    testing_gnc_LinReg(
-        num_of_num     = 100,
-        min_percentage =  50,
-        max_percentage = 100,
-        step           =   1,
-        num_per_percent=   5
-    )
+    # testing_gnc_LinReg(
+    #     num_of_num     = 100,
+    #     min_percentage =  50,
+    #     max_percentage = 100,
+    #     step           =   1,
+    #     num_per_percent=   5
+    # )
 
-    # testing_gnc_LinReg_Fishler()
+    testing_gnc_LinReg_Fishler()
