@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Runar"
+  given-names: "Jåtun"
+
+title: "TPK4560 Project Pose Estimation"
+date-released: 2022
+url: "https://github.com/runarjaa/22v-TPK4560-Prosjektoppgave-Pose_estimation"
