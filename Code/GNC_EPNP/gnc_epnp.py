@@ -7,5 +7,3 @@ from datetime import datetime
 rand.seed(datetime.now())
 
 np.set_printoptions(formatter={'float': '{: 0.2f}'.format})
-
-print("Hello, World!")

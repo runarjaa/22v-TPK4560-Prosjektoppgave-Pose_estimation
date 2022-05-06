@@ -6,6 +6,8 @@ import random as rand
 from datetime import datetime
 rand.seed(datetime.now())
 
+from utils import *
+
 np.set_printoptions(formatter={'float': '{: 0.2f}'.format})
 
 class EPnP:
@@ -30,14 +32,89 @@ class EPnP:
         self.best_trans()
         
         self.compute_pixels()
-        # self.check_opencv()
-        self.print_results()
+
+
     
-    # def compute_gnc_tls_epnp(self):
+    def compute_gnc_epnp(self):
+        self.gnc_init()
+
+        last_iter = []
+        iterations = 0
+
+        for i in range(self.gnc_max_iter):
+            iterations += 1
+            print(iterations)
+            last_iter.append(np.sum(self.gnc_w))
+
+            #Weighted EPnP, this is where I do not think this will work
+            self.alpha = self.compute_gnc_alpha()
+            self.M = self.compute_M()
+            self.K = self.compute_K()
+            self.rho = self.compute_rho()
+            self.L_6_10 = self.compute_L_6_10()
+
+            self.betas = self.compute_betas()
+            self.X1, self.X2, self.X3 = self.compute_Xi()
+            self.c_c1, self.x_c1, self.sc_1 = self.compute_norm_sign_scaling_factor(self.X1, self.x_w)
+            self.c_c2, self.x_c2, self.sc_2 = self.compute_norm_sign_scaling_factor(self.X2, self.x_w)
+            self.c_c3, self.x_c3, self.sc_3 = self.compute_norm_sign_scaling_factor(self.X3, self.x_w)
+            self.Rt_1 = self.getRotT(self.x_w, self.x_c1)
+            self.Rt_2 = self.getRotT(self.x_w, self.x_c2)
+            self.Rt_3 = self.getRotT(self.x_w, self.x_c3)
+            self.best_trans()
+
+            for j in range(self.n):
+                self.gnc_r[i] = np.linalg.norm(self.pix[i] - self.Rt_best @ self.xh_w[i])
+                self.gnc_w[j] = w_from_r(self.gnc_r[j], self.gnc_eps, self.gnc_mu)
+
+            self.gnc_mu = self.gnc_mu * self.gnc_mu_update
+            
+            if i >= 5:
+                if np.sum(self.gnc_w) == last_iter[i]:
+                    break
         
+        print(iterations)
+        print(last_iter[-1])
+        print(self.T)
+        print(self.Rt_best)
+
+    
+    def gnc_init(self):
+        self.compute_reg_epnp()
+
+        self.gnc_eps = 0.011
+        self.gnc_mu_update = 1.4
+        self.gnc_max_iter = 50
+
+        self.gnc_T0 = self.Rt_best
+        self.gnc_r = np.zeros((self.n, 1))
+        for i in range(self.n):
+            self.gnc_r[i] = np.linalg.norm(self.pix[i] - self.gnc_T0 @ self.xh_w[i])
+        self.gnc_r0_max = np.max(self.gnc_r)
+
+        self.gnc_w = np.identity(self.n)
+        self.gnc_mu = self.gnc_eps**2 / (2*self.gnc_r0_max**2 - self.gnc_eps**2)
 
     # def loss(self, a, T, b):
     #     return a - self.C @ T @ b.T
+
+
+
+    # Computing alphas
+    def compute_gnc_alpha(self):
+        
+        X = self.xh_w.T
+        C = self.ch_w.T
+        test = (np.linalg.inv(C) @ X)
+        
+        test_2 = test @ self.gnc_w
+        
+        return test_2.T
+
+
+
+
+
 
     
     def load_random_data(self, n, ax, ay, az, x, y, z, fu, fv, u0, v0, randomT=False):
@@ -148,7 +225,7 @@ class EPnP:
    # -----------------------------------------------------------------------------
     # -----------------------------------------------------------------------------
     # Computing L matrix from Lb = p
-    # Did not understand this, so this is borrowed/stolen from EPnP python
+    # Did not understand this, so this is on loan from EPnP python
     def compute_L_6_10(self):
         L_6_10 = np.zeros((6,10))
         kernel = np.array([self.K.T[3], self.K.T[2], self.K.T[1], self.K.T[0]]).T
@@ -240,8 +317,9 @@ class EPnP:
         
         M = np.matmul(cpts.transpose(), wpts)
         
-        U, S, V = np.linalg.svd(M)
-        R = np.matmul(U, V)
+        U, S, Vt = np.linalg.svd(M)
+        test = np.diag([1,1,np.linalg.det( Vt.T @ U.T)])
+        R = Vt.T @ test @ U.T
         
         if np.linalg.det(R) < 0:
             R = - R
@@ -264,12 +342,13 @@ class EPnP:
 
         beta = np.zeros((3,3))
         beta[0,0] = 1
+# Error
 
         temp = np.matmul(np.linalg.pinv(L_6_3), self.rho)
         beta[1,0] = np.sqrt(abs(temp[0]))
         beta[1,1] = np.sqrt(abs(temp[1]))
 
-        temp = np.matmul(np.linalg.inv(L_6_6), self.rho)
+        temp = np.matmul(np.linalg.pinv(L_6_6), self.rho)
         beta[2,0] = np.sqrt(abs(temp[0]))
         beta[2,1] = np.sqrt(abs(temp[3]))
         beta[2,2] = np.sqrt(abs(temp[5]))

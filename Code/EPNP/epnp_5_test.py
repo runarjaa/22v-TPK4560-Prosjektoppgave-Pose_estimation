@@ -11,8 +11,8 @@ rand.seed(datetime.now())
 np.set_printoptions(formatter={'float': '{: 0.2f}'.format})
 
 # Trying to import stanford bunny
-# path_to_bunny = "D:\\Skole\\Semester 10\\Prosjektoppgave\\Data\\bunny\\reconstruction\\bun_zipper.ply"
-path_to_bunny = "D:\\Runar\\Documents\\1_Studier\\Semester_10\\Prosjektoppgave\\22v-TPK4560-Prosjektoppgave-Pose_estimation\\Data\\bunny\\reconstruction\\bun_zipper.ply"
+path_to_bunny = "D:\\Skole\\Semester_10\\Prosjektoppgave\\Data\\bunny\\reconstruction\\bun_zipper.ply"
+# path_to_bunny = "D:\\Runar\\Documents\\1_Studier\\Semester_10\\Prosjektoppgave\\22v-TPK4560-Prosjektoppgave-Pose_estimation\\Data\\bunny\\reconstruction\\bun_zipper.ply"
 bunny_ply = o3d.io.read_point_cloud(path_to_bunny)
 
 # o3d.visualization.draw_geometries([bunny_ply])
@@ -32,7 +32,7 @@ transf_c_w = np.array([
     [1, 0, 0, 0],
     [0, 1, 0, 0],
     [0, 0, 1, 1],
-    [0, 0, 0, 1  ]
+    [0, 0, 0, 1]
 ], dtype=np.float64)
 
 # # Parameter matrix
@@ -56,7 +56,7 @@ ph_w = np.array([
     ])
 
 
-if __name__ == "__main__":
+def test_main():
     epnp = EPnP()
     # epnp.load_random_data(10000,60,60,60,0,0,3,1500,1500,640,512)
     # epnp.load_set_data(transf_c_w, camera_para, ph_w)
@@ -64,8 +64,25 @@ if __name__ == "__main__":
     start = time.time()
     start_p = time.process_time()
     epnp.compute_reg_epnp()
+    # epnp.print_results()
     end = time.time()
     end_p = time.process_time()
     print("\nCalculating time:", end-start, end_p-start_p, "\n")
 
-    epnp.plot_results_o3d()
+    # epnp.plot_results_o3d()
+
+def test_gnc():
+    epnp = EPnP()
+    # epnp.load_random_data(10000,60,60,60,0,0,3,1500,1500,640,512)
+    # epnp.load_set_data(transf_c_w, camera_para, ph_w)
+    epnp.load_set_data(transf_c_w, camera_para, bunnyh)
+
+    # epnp.compute_gnc_epnp()
+
+    # epnp.print_results()
+
+
+
+if __name__ == "__main__":
+    test_main()
+    test_gnc()

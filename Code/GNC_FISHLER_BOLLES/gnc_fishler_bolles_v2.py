@@ -1,8 +1,11 @@
 from cProfile import label
+from turtle import color
 from utils import *
 
 import numpy as np
 import matplotlib.pyplot as plt
+
+import matplotlib.patheffects as pe
 
 np.set_printoptions(formatter={'float': '{: 0.6f}'.format})
 
@@ -110,13 +113,24 @@ class GNC_LINEAR_REGRESSION():
                     break    
 
     def plot_results(self):
-        fig, ax = plt.subplots()
-        # ax.set_xlim([-0.5,10.5]);ax.set_ylim([-0.4,5])
+        fig, ax = plt.subplots(figsize=(7,3.5))
+        ax.set_xlim([-0.5,10.5]);ax.set_ylim([-0.4,5])
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
+
         x = np.linspace(self.min-5, self.max+5, self.n*10)
-        ax.plot(x, self.B[0]*x + self.B[1], color='blue', linewidth=3.5, label='Guessed line')
-        ax.plot(x, self.a*x + self.b, color='orange', label='Actual Line')
+        
+        # LEAST SQUARES LINE
+        ax.plot(x, 1.51 + 0.06 * x, color='purple', label='Least Squares Line', linewidth=3.5, path_effects=[pe.Stroke(linewidth=5, foreground='black'), pe.Normal()])
+
+        # GUESSED LINE
+        # ax.plot(x, self.B[0]*x + self.B[1], color='blue', linewidth=3.5, label='Guessed line')
+
+        # IDEAL LINE
+        ax.plot(x, self.a*x + self.b, color='orange', label='Ideal Line', linewidth=3.5, path_effects=[pe.Stroke(linewidth=5, foreground='black'), pe.Normal()])
+
         ax.legend(loc='upper left')
-        ax.scatter(self.X[:,0], self.Y, c='g')
+        ax.scatter(self.X[:,0], self.Y, s=50, c='cyan', edgecolors='black', zorder=10)
 
         if self.fishler:
             ax.set_xlim([-0.5,10.5]);ax.set_ylim([-0.4,5])
@@ -194,12 +208,12 @@ def testing_gnc_LinReg_Fishler():
 
 if __name__ == "__main__":
     
-    testing_gnc_LinReg(
-        num_of_num     = 100,
-        min_percentage =   0,
-        max_percentage = 100,
-        step           =   5,
-        num_per_percent=   2
-    )
+    # testing_gnc_LinReg(
+    #     num_of_num     = 100,
+    #     min_percentage =   0,
+    #     max_percentage = 100,
+    #     step           =   5,
+    #     num_per_percent=   2
+    # )
 
-    # testing_gnc_LinReg_Fishler()
+    testing_gnc_LinReg_Fishler()
