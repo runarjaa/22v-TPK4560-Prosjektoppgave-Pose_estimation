@@ -1,4 +1,4 @@
-from tkinter import XView
+# from tkinter import XView
 from utils import *
 
 import numpy as np
@@ -17,7 +17,7 @@ class GNC_PROCRUSTES:
 
     def load_points(self):
         # Loading ply-file
-        path_to_bunny = "D:\\Skole\\Semester_10\\Prosjektoppgave\\Data\\bunny\\reconstruction\\bun_zipper_res4.ply"
+        path_to_bunny = "D:\\Skole\\Semester_10\\Prosjektoppgave\\Data\\bunny\\reconstruction\\bun_zipper_res3.ply"
         bunny_true_ply = o3d.io.read_point_cloud(path_to_bunny)
 
         # Point calculations
@@ -240,4 +240,4 @@ if __name__ == "__main__":
     #     num_per_percent=   2
     # )
 
-    showing_gnc_with_plot(50)
+    showing_gnc_with_plot(95)

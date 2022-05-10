@@ -71,18 +71,6 @@ def test_main():
 
     # epnp.plot_results_o3d()
 
-def test_gnc():
-    epnp = EPnP()
-    # epnp.load_random_data(10000,60,60,60,0,0,3,1500,1500,640,512)
-    # epnp.load_set_data(transf_c_w, camera_para, ph_w)
-    epnp.load_set_data(transf_c_w, camera_para, bunnyh)
-
-    # epnp.compute_gnc_epnp()
-
-    # epnp.print_results()
-
-
 
 if __name__ == "__main__":
     test_main()
-    test_gnc()
