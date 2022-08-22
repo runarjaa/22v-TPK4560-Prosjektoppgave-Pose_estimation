@@ -17,7 +17,7 @@ class GNC_PROCRUSTES:
 
     def load_points(self):
         # Loading ply-file
-        path_to_bunny = "D:\\Skole\\Semester_10\\Prosjektoppgave\\Data\\bunny\\reconstruction\\bun_zipper_res3.ply"
+        path_to_bunny = "C:\\Users\\Runar\\Documents\\Skole\\NTNU\\Semester_10\\Prosjektoppgave\Data\\bunny\\reconstruction\\bun_zipper_res3.ply"
         bunny_true_ply = o3d.io.read_point_cloud(path_to_bunny)
 
         # Point calculations
